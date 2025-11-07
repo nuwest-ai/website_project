@@ -1,8 +1,8 @@
 # Website Hero Copy
 
 ## Primary Hero
-**Headline:** Prove your resilience. Prove your AI is safe.  
-**Subhead:** Security and AI agents are too important to trust on belief. We run adversarial, repeatable tests that turn assumptions into evidence.  
+**Headline:** Battle-Tested. Board-Ready. Built Right.
+**Subhead:** We run adversarial tests that expose fragility and produce evidence leaders can defend. Security viability and AI safety you can measure.
 **CTAs:** Start a viability test • See a sample evidence pack
 
 ## Secondary Blocks
