@@ -9,6 +9,9 @@
 
 Create a modern, dynamic website for nuwest.ai that captures leads and projects a professional VC-backed security startup image with a distinctive black/yellow color scheme.
 
+**Hero Message:** Battle-Tested. Board-Ready. Built Right.
+**Value Proposition:** Adversarial testing that produces evidence leaders can defend.
+
 ---
 
 ## 📋 Project Documents
