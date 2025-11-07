@@ -2,7 +2,7 @@
 
 ## Current
 - Holding page live on AWS (Route53 + CloudFront + S3 + ACM).
-- Brand direction established: nuwest.ai >>, bold, direct.
+- Brand direction established: nuwest.ai >, bold, direct.
 - Presentation v0.4 outline completed: dual-track viability (security + ethical).
 
 ## Gaps
