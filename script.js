@@ -97,73 +97,47 @@ if (contactForm) {
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
 
-    try {
-      // Disable submit button and show loading state
-      submitButton.disabled = true;
-      submitButton.textContent = 'Sending...';
+    // Disable submit button and show loading state
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
 
-      // Prepare data for API submission
-      // Combine interest field with message for backend storage
-      const interestText = data.interest ? `\n\n[Interested in: ${data.interest}]` : '';
-      const apiData = {
-        name: data.name,
-        email: data.email,
-        company: data.company || undefined, // Optional field
-        message: (data.message || '') + interestText,
-      };
+    // Build email content
+    const interestText = data.interest ? `Interest: ${data.interest}` : '';
+    const companyText = data.company ? `Company: ${data.company}` : '';
 
-      // Submit to Sextant contact API
-      const response = await fetch('https://sextant.nuwest.ai/api/v1/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apiData),
-      });
+    const emailBody = [
+      `Name: ${data.name}`,
+      `Email: ${data.email}`,
+      companyText,
+      interestText,
+      '',
+      'Message:',
+      data.message || '(No message provided)'
+    ].filter(line => line).join('\n');
 
-      // Parse response
-      const result = await response.json();
+    const subject = encodeURIComponent(`nuwest.ai Contact: ${data.name}${data.company ? ` (${data.company})` : ''}`);
+    const body = encodeURIComponent(emailBody);
 
-      // Handle errors
-      if (!response.ok) {
-        throw new Error(result.error || result.message || 'Submission failed');
-      }
+    // Open email client with pre-filled data
+    const mailtoLink = `mailto:nuwest.ai@gmail.com?subject=${subject}&body=${body}`;
 
-      // Success state
-      submitButton.textContent = 'Message Sent!';
-      submitButton.style.background = '#00C853';
+    // Try to open mailto
+    window.location.href = mailtoLink;
 
-      // Reset form
+    // Success state
+    submitButton.textContent = 'Opening Email...';
+    submitButton.style.background = '#00C853';
+
+    // Show success message
+    showNotification('Opening your email client. If it doesn\'t open, please email nuwest.ai@gmail.com directly.', 'success');
+
+    // Reset form and button after delay
+    setTimeout(() => {
       contactForm.reset();
-
-      // Show success message
-      showNotification('Thank you! We\'ll be in touch soon.', 'success');
-
-      // Reset button after 3 seconds
-      setTimeout(() => {
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-        submitButton.style.background = '';
-      }, 3000);
-
-    } catch (error) {
-      console.error('Form submission error:', error);
-
-      // Error state
-      submitButton.textContent = 'Error - Try Again';
-      submitButton.style.background = '#D32F2F';
-
-      // Show user-friendly error message
-      const errorMessage = error.message || 'Something went wrong. Please try again.';
-      showNotification(errorMessage, 'error');
-
-      // Reset button after 3 seconds
-      setTimeout(() => {
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-        submitButton.style.background = '';
-      }, 3000);
-    }
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+      submitButton.style.background = '';
+    }, 3000);
   });
 }
 
