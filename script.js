@@ -101,39 +101,41 @@ if (contactForm) {
     submitButton.disabled = true;
     submitButton.textContent = 'Sending...';
 
-    // Build email content
-    const interestText = data.interest ? `Interest: ${data.interest}` : '';
-    const companyText = data.company ? `Company: ${data.company}` : '';
+    try {
+      // POST to AWS API Gateway
+      const response = await fetch('https://8yxgqdo111.execute-api.us-east-1.amazonaws.com/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: data.name || '',
+          title: data.company || '',
+          email: data.email || ''
+        })
+      });
 
-    const emailBody = [
-      `Name: ${data.name}`,
-      `Email: ${data.email}`,
-      companyText,
-      interestText,
-      '',
-      'Message:',
-      data.message || '(No message provided)'
-    ].filter(line => line).join('\n');
+      const result = await response.json();
 
-    const subject = encodeURIComponent(`nuwest.ai Contact: ${data.name}${data.company ? ` (${data.company})` : ''}`);
-    const body = encodeURIComponent(emailBody);
+      if (result.ok) {
+        // Success state
+        submitButton.textContent = 'Sent!';
+        submitButton.style.background = '#00C853';
+        showNotification('Thank you! We\'ll be in touch soon.', 'success');
+        contactForm.reset();
+      } else {
+        // API returned an error
+        throw new Error(result.error || 'Submission failed');
+      }
+    } catch (error) {
+      // Error state
+      submitButton.textContent = 'Error';
+      submitButton.style.background = '#D32F2F';
+      showNotification(error.message || 'Something went wrong. Please try again or email nuwest.ai@gmail.com directly.', 'error');
+    }
 
-    // Open email client with pre-filled data
-    const mailtoLink = `mailto:nuwest.ai@gmail.com?subject=${subject}&body=${body}`;
-
-    // Try to open mailto
-    window.location.href = mailtoLink;
-
-    // Success state
-    submitButton.textContent = 'Opening Email...';
-    submitButton.style.background = '#00C853';
-
-    // Show success message
-    showNotification('Opening your email client. If it doesn\'t open, please email nuwest.ai@gmail.com directly.', 'success');
-
-    // Reset form and button after delay
+    // Reset button after delay
     setTimeout(() => {
-      contactForm.reset();
       submitButton.disabled = false;
       submitButton.textContent = originalText;
       submitButton.style.background = '';
